@@ -74,7 +74,6 @@ app.post("/api/exercise/new-user", async (req, res) => {
 app.post("/api/exercise/add", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.userId });
-    console.log(user);
 
     if (!user) {
       return res.send("unknown _id");
@@ -123,7 +122,12 @@ app.get("/api/exercise/log", async (req, res) => {
       }
     });
 
-    const displayExercisesCount = req.query.limit || exercises.length;
+    const displayExercisesCount =
+      req.query.limit === undefined
+        ? exercises.length
+        : req.query.limit > exercises.length
+        ? exercises.length
+        : req.query.limit;
     const displayExercises = exercises.slice(0, displayExercisesCount);
 
     res.json({
